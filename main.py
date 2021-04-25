@@ -6,6 +6,8 @@ from flask import Flask, request
 from telegram import Update
 from telegram.ext import Dispatcher, MessageHandler, Filters, CallbackContext
 
+from utils import get_stock_price
+
 # Load data from config.ini file
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -49,6 +51,13 @@ def reply_handler(update: Update, context: CallbackContext):
         update.message.reply_text('hello, ' + username)
     else:
         update.message.reply_text(text)
+
+    check_price, check_name = get_stock_price(text)
+    if check_price:
+        update.message.reply_text(check_name + check_price)
+    else:
+        update.message.reply_text('error')
+
 
 
 # New a dispatcher for bot
